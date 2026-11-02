@@ -576,16 +576,22 @@ function resolveLaunchRequest(request: FreshPiLaunchRequest): ResolvedLaunch {
 	};
 }
 
+function formatSurfaceName(request: FreshPiLaunchRequest): string {
+	const role = request.handoff ? undefined : request.agent?.trim();
+	return role ? `${role} · ${request.name}` : request.name;
+}
+
 async function prepareLaunchSurface(
 	resolved: ResolvedLaunch,
 	operations: PiLaunchOperations,
 ): Promise<PreparedSurface> {
 	const { request } = resolved;
+	const surfaceName = formatSurfaceName(request);
 	if (!request.worktree) {
 		return {
 			surface:
 				request.surface ??
-				(await operations.createPane(request.name, resolved.sourceCwd)),
+				(await operations.createPane(surfaceName, resolved.sourceCwd)),
 			targetCwd: resolved.sourceCwd,
 			effectiveAgentDir: resolved.localAgentDir ?? resolved.agentDir,
 			localAgentDir: resolved.localAgentDir,
@@ -622,7 +628,7 @@ async function prepareLaunchSurface(
 	let created: WorktreeSurfaceForLaunch;
 	try {
 		created = await operations.createWorktree(
-			request.name,
+			surfaceName,
 			provisionCwd,
 			request.worktree.branch,
 			baseSha,

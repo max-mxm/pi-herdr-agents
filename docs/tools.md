@@ -126,7 +126,7 @@ subagent({
 
 | Parameter              | Type    | Default        | Description                                                                                       |
 | ---------------------- | ------- | -------------- | ------------------------------------------------------------------------------------------------- |
-| `name`                 | string  | required       | Short stable child label; coordinated groups use `<task>-<role>[-n]` (widget and pane title)      |
+| `name`                 | string  | required       | Short stable child label; coordinated groups use `<task>-<role>[-n]`. For a fresh named agent, the Herdr pane title is `<agent> · <name>`; bare and resumed children keep `name`. The Pi widget and control tools continue to use `name`. |
 | `task`                 | string  | required       | Task prompt for the sub-agent                                                                     |
 | `agent`                | string  | —              | Load defaults from agent definition                                                               |
 | `fork`                 | boolean | —              | Override the child session mode: `true` forces fork, `false` forces standalone. Omit to inherit the agent `session-mode` frontmatter |
@@ -139,6 +139,12 @@ subagent({
 | `tools`                | string  | —              | Comma-separated tool names                                                                        |
 | `cwd`                  | string  | —              | Working directory, or source repository when `worktree` is set (see [Role Folders](roles.md#role-folders)) |
 | `worktree`             | object \| null | —          | Isolated Herdr-managed Git worktree; requires `branch`, with optional `base` (committed `HEAD` by default). Omit or pass `null` to use an ordinary pane in `cwd` when a client requires the property. |
+
+Fresh children launched with a named `agent` prefix the Herdr pane title with
+that role name (for example, `reviewer · login-review`). This makes the role
+visible in Herdr without changing the child name used by the Pi widget,
+completion messages, or control tools. Bare launches, resumed sessions, and `/worktree` handoffs keep
+their requested pane names.
 
 A bare spawn's `systemPrompt` is not passed to Pi as a system prompt. The host
 prepends it as a role block to the child's first message, which is delivered
