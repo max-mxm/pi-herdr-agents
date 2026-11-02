@@ -2,6 +2,20 @@
 
 This page collects the checks for common problems. Each section links to the full reference.
 
+## Herdr Desktop (local experimental branch)
+
+Desktop uses `hc`, not the classic `herdr` server. Do not set `HERDR_ENV=1`
+artificially: it selects the wrong transport. This branch recognizes a live local
+`HC_TERMINAL_ID`; its [Desktop guide](desktop.md) documents supported actions,
+unsupported automatic worktrees, explicit tests and reversible activation.
+An installed release does not gain this transport merely because the branch exists.
+
+If a configured connection works in the parent but fails in Desktop children,
+check whether its authentication is an environment reference. The core's ambient
+environment is separate. This branch forwards declared credential references via
+stdin-only RPC, without persisting their values; reload Pi and launch new
+children after applying the fix. See [authentication environment](desktop.md#authentication-environment).
+
 ## Troubleshooting completion delivery
 
 If a child finishes but the parent returns an empty or unrelated response, first verify that the result reached the parent session:

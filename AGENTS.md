@@ -34,6 +34,7 @@ Former bundled roles, `/plan`, its plan skill, and `/skill:orchestrate` now belo
 - `maestro/adapters/pi/` — `PiHarnessAdapter`, launch transactions, completion evidence, session I/O, activity files, SDK model glue, and task-model registry projection
 - `maestro/adapters/pi/child/subagent-done.ts` — child protocol: `caller_ping`, `subagent_done`, and activity recording
 - `maestro/surfaces/herdr/` — `HerdrSurfaceProvider`, Herdr CLI driver, and terminal scripts/placement, plus `herdr-socket.ts` for socket pane metadata
+- `maestro/surfaces/desktop/` — experimental local `hc` transport and validated CLI snapshots; `desktop-launch.ts` forwards declared authentication references over stdin-only RPC. See `docs/desktop.md`. Runtime guards must reject Desktop worktree operations before any provisioning or cleanup fallback.
 - `maestro/runtime/` — `RunSession`, Pi composition, run ownership, controls/retries, observation, delivery-gated cleanup, worktree operations/handoff, and task-model init composition, plus `delegated-marker.ts` for delegated-child sidebar markers
 - `maestro/adapters/fake/`, `maestro/surfaces/fake/`, `test/maestro/` — conformance fakes, seam tests, and the dependency-rule test
 - `CONTEXT.md` — orchestration-domain glossary

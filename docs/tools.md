@@ -1,5 +1,9 @@
 # Tools and lifecycle reference
 
+> **Desktop local branch:** ordinary launch/control/result delivery use `hc`;
+> managed worktrees are refused. Classic pane placement and sidebar controls do
+> not apply. See [Desktop scope and verification](desktop.md).
+
 This page is the detailed reference for the tools, commands, and run lifecycle of `pi-herdr-agents`. For installation and everyday use, see the [README](../README.md). Configuration keys are in [Configuration](configuration.md), and role authoring is in [Roles and custom agents](roles.md).
 
 ## What's Included

@@ -11,6 +11,7 @@ type RepoArea =
 	| "adapters/pi"
 	| "adapters/fake"
 	| "surfaces/herdr"
+	| "surfaces/desktop"
 	| "surfaces/fake"
 	| "runtime"
 	| "pi-extension"
@@ -135,6 +136,8 @@ function classifyRepoPath(repoPath: string): RepoArea {
 	if (repoPath.startsWith("maestro/adapters/pi/")) return "adapters/pi";
 	if (repoPath.startsWith("maestro/adapters/fake/")) return "adapters/fake";
 	if (repoPath.startsWith("maestro/surfaces/herdr/")) return "surfaces/herdr";
+	if (repoPath.startsWith("maestro/surfaces/desktop/"))
+		return "surfaces/desktop";
 	if (repoPath.startsWith("maestro/surfaces/fake/")) return "surfaces/fake";
 	if (repoPath.startsWith("maestro/runtime/")) return "runtime";
 	return "other";
@@ -180,16 +183,30 @@ function isForbiddenEdge(root: string, reference: ModuleReference) {
 				["core", "surfaces/herdr"].includes(target) ||
 				(isNodeBuiltin(specifier) && !specifier.startsWith("@earendil-works/"))
 			);
+		case "surfaces/desktop":
+			return !(
+				["core", "surfaces/desktop"].includes(target) ||
+				isNodeBuiltin(specifier)
+			);
 		case "runtime":
 			return !(
-				["core", "adapters/pi", "surfaces/herdr", "runtime"].includes(target) ||
-				isNodeBuiltin(specifier)
+				[
+					"core",
+					"adapters/pi",
+					"surfaces/herdr",
+					"surfaces/desktop",
+					"runtime",
+				].includes(target) || isNodeBuiltin(specifier)
 			);
 		case "adapters/fake":
 		case "surfaces/fake":
 			return !(target === "core" || isNodeBuiltin(specifier));
 		case "pi-extension":
-			return target === "adapters/pi" || target === "surfaces/herdr";
+			return (
+				target === "adapters/pi" ||
+				target === "surfaces/herdr" ||
+				target === "surfaces/desktop"
+			);
 		default:
 			return false;
 	}

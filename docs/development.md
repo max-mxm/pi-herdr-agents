@@ -5,8 +5,10 @@ This page is for contributors. Read [`AGENTS.md`](../AGENTS.md) for repository r
 ## Code map
 
 The maestro seams remain inside one npm package with the same Pi extension
-entry point. Pi is the sole real harness and Herdr the sole real surface
-provider; fakes are for conformance tests only.
+entry point. Pi is the sole real harness. Classic Herdr remains the full surface
+provider; this local branch adds an experimental Desktop transport with a
+narrower capability set. Fakes are for conformance tests only. See
+[Desktop verification](desktop.md#verification) for the explicit lifecycle suite.
 
 - `pi-extension/subagents/index.ts` — Pi composition root: tools/commands,
   role-pack event bridge, host policy, widgets, and parent delivery.
@@ -24,6 +26,8 @@ provider; fakes are for conformance tests only.
 - `maestro/surfaces/herdr/` — `HerdrSurfaceProvider`, Herdr CLI driver,
   terminal scripts/placement, and `herdr-socket.ts`, the bounded socket
   client for pane metadata.
+- `maestro/surfaces/desktop/` — local `hc` transport, validated CLI snapshots and
+  terminal ownership guards. Automatic managed worktrees remain unsupported.
 - `maestro/runtime/` — run ownership, controls/retries, observation,
   delivery-gated cleanup, Pi composition, worktree operations/handoff,
   task-model init composition, and sidebar markers (`delegated-marker.ts`).

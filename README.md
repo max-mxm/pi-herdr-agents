@@ -1,5 +1,10 @@
 # Pi Herdr Agents
 
+> **Local experimental branch:** ordinary subagents can also run in Herdr Desktop
+> through `hc`. Automatic Desktop worktrees remain blocked. See the
+> [Desktop transport guide](docs/desktop.md) for verified scope, tests and activation.
+> The classic Herdr behavior described below is preserved.
+
 [![npm version](https://img.shields.io/npm/v/pi-herdr-agents)](https://www.npmjs.com/package/pi-herdr-agents)
 [![CI](https://github.com/giuseppecrj/pi-herdr-agents/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/giuseppecrj/pi-herdr-agents/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)

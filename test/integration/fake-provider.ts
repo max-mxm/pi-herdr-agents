@@ -723,7 +723,26 @@ function writeResponse(
 	response.end("data: [DONE]\n\n");
 }
 
+let requiredTestAuthorization: string | undefined;
+
+/** Optional local-only authentication gate for transport inheritance tests. */
+export function requireTestAuthorization(key: string): void {
+	requiredTestAuthorization = `Bearer ${key}`;
+}
+
 const server = createServer(async (request, response) => {
+	if (
+		requiredTestAuthorization &&
+		request.headers.authorization !== requiredTestAuthorization
+	) {
+		response.writeHead(401, { "content-type": "application/json" });
+		response.end(
+			JSON.stringify({
+				error: { message: "Local fixture authentication required" },
+			}),
+		);
+		return;
+	}
 	if (request.method !== "POST" || request.url !== "/v1/chat/completions") {
 		response.writeHead(404).end();
 		return;

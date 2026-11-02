@@ -25,6 +25,7 @@ import type {
 	PiCompletedMetadata,
 } from "../../maestro/runtime/pi-run-session.ts";
 import { FakeSurfaceProvider } from "../../maestro/surfaces/fake/fake-surface-provider.ts";
+import { DesktopSurfaceProvider } from "../../maestro/surfaces/desktop/desktop-surface-provider.ts";
 import { launchOperationsFromSurface } from "../../maestro/adapters/pi/launch.ts";
 import { discoverAgentCatalog } from "../../maestro/core/roles/discovery.ts";
 import {
@@ -317,6 +318,63 @@ async function makeFixture() {
 		registrations: () => registrations,
 	};
 }
+
+test("Desktop refuses worktree launch, handoff and cleanup before any provisioning", () =>
+	fixture(async (f) => {
+		const provider = new DesktopSurfaceProvider(() => {
+			throw new Error("Unexpected Desktop I/O");
+		});
+		const session = runtime.createDefaultRunSession({
+			...f.options,
+			roles: [f.input().role],
+			infrastructure: {
+				...f.options.infrastructure!,
+				surfaceProvider: provider,
+			},
+		});
+		try {
+			const input = f.input("desktop-worktree");
+			input.task.worktree = { branch: "test/desktop-worktree" };
+			const before = readdirSync(f.dir);
+			await assert.rejects(
+				() => session.spawnPi(input),
+				/refused before provisioning/,
+			);
+			await assert.rejects(
+				() => session.spawn(input.task),
+				/refused before provisioning/,
+			);
+			await assert.rejects(
+				() =>
+					session.handoffWorktree({
+						name: "handoff",
+						task: "bounded",
+						branch: "test/handoff",
+						leafId: "leaf",
+						snapshot: f.options.getLaunchSnapshot(),
+						runtimePlan: input.plans[0],
+					}),
+				/handoff is not supported/,
+			);
+			assert.throws(
+				() =>
+					session.createWorktreeCleanupOperations({
+						manifestDir: f.dir,
+						liveHolders: () => [],
+					}),
+				/cleanup is not supported/,
+			);
+			await assert.rejects(
+				() => session.listWorktreeSurfaces(),
+				/not supported/,
+			);
+			assert.deepEqual(readdirSync(f.dir), before);
+			assert.equal(f.commands.length, 0);
+			assert.equal(f.provider.listSurfaces().length, 0);
+		} finally {
+			await session.shutdown("quit");
+		}
+	}));
 
 test("Task17 discovered Role defaults reach the actual runtime launch without synthetic host roles", () =>
 	fixture(async (f) => {

@@ -1,5 +1,8 @@
 # Documentation map
 
+- [Experimental local Desktop transport](desktop.md) — verified scope, lifecycle
+  tests, unsupported automatic worktrees and reversible activation.
+
 Use this page to find the authoritative document for a task. Current shipped
 behavior and accepted ADRs govern existing APIs. Historical plans and research
 are evidence, not shipped contracts, when a later ADR supersedes them.

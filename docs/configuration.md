@@ -1,5 +1,10 @@
 # Configuration
 
+> **Desktop local branch:** no new configuration key is required. A local
+> `HC_TERMINAL_ID`, without `HERDR_ENV=1`, selects Desktop. Classic `panes`
+> placement and `sidebar` settings do not arrange or mark Desktop terminals.
+> See [Desktop scope and activation](desktop.md).
+
 This page is the reference for the durable `config.json` settings, task-model preferences, and the events other extensions use during `/subagents-init`. For a short introduction, see [Choose models](../README.md#choose-models) in the README.
 
 ## Configuration file

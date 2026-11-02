@@ -15,8 +15,15 @@ from its directory, not the user's working directory.
 
 ## What the host is
 
-A Pi extension that runs asynchronous Pi child agents exclusively inside Herdr
-(the terminal multiplexer; Pi must be started from inside Herdr). It is a
+A Pi extension that runs asynchronous Pi child agents inside classic Herdr,
+or through the experimental local Desktop transport in this branch. Desktop is
+selected by a live local `HC_TERMINAL_ID` without `HERDR_ENV=1`; do not spoof the
+classic environment. See [Desktop scope](../../docs/desktop.md). Ordinary Desktop
+launch, result delivery, resume, persistent follow-up/stop and cancellation have
+explicit integration coverage. Automatic Desktop worktree launch, handoff,
+inventory and cleanup are refused before side effects; use an externally
+prepared worktree as an ordinary child's `cwd` when isolation is needed. Classic
+pane placement and sidebar markers do not apply to Desktop. It is a
 pack-neutral execution host: it ships no agent roles and no planning or review
 workflows. Roles and workflows come from project or global definitions and
 installed role packs. Children are real Pi processes in Herdr panes; ordinary

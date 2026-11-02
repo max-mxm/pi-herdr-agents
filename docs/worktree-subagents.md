@@ -1,5 +1,11 @@
 # Worktree subagents
 
+> **Desktop local branch:** the managed-worktree contract on this page applies
+> to classic Herdr only. Desktop refuses provisioning, handoff, inventory and
+> cleanup before side effects. An externally prepared worktree may be passed as
+> an ordinary child's `cwd`; it is retained and not managed by the extension.
+> See [Desktop worktree safety](desktop.md#worktree-safety).
+
 This guide is the operational reference for running writing agents in isolated Git worktrees with `pi-herdr-agents`. For installation and everyday use, see the [README](../README.md). For the complete tool API and status model, see the [tools and lifecycle reference](tools.md). For the product and open-source research behind these choices, see the [research report](research/worktree-subagent-orchestration.md).
 
 ## Quick start

@@ -45,6 +45,7 @@ import {
 	inspectNoProgressSessionTail,
 } from "../adapters/pi/session.ts";
 import { HerdrSurfaceProvider } from "../surfaces/herdr/herdr-surface-provider.ts";
+import { DesktopSurfaceProvider } from "../surfaces/desktop/desktop-surface-provider.ts";
 import { readSubagentActivityFile } from "../adapters/pi/activity-file.ts";
 import { projectActivity } from "../core/activity.ts";
 import {
@@ -506,12 +507,14 @@ export function createDefaultRunSession(
 		// this explicitly injected registry. Injected infrastructure already owns one.
 		const provider =
 			options.infrastructure?.surfaceProvider ??
-			new HerdrSurfaceProvider({
-				paneConfig: loadPaneConfig(
-					join(options.configDir, "herdr-agents"),
-					options.configExamplePath,
-				),
-			});
+			(process.env.HC_TERMINAL_ID && process.env.HERDR_ENV !== "1"
+				? new DesktopSurfaceProvider()
+				: new HerdrSurfaceProvider({
+						paneConfig: loadPaneConfig(
+							join(options.configDir, "herdr-agents"),
+							options.configExamplePath,
+						),
+					}));
 		const wake = options.infrastructure ? undefined : new FileWakeRegistry();
 		const supervision =
 			options.infrastructure?.supervision ??
@@ -720,7 +723,9 @@ export function createDefaultRunSession(
 	// reads this shared current binding, not the old facade's options.
 	if (adopted) resumePi = state.resumePi;
 	// Live markers and their sequence survive a reload with their runs.
-	state.markers ??= createDelegatedMarkers(options.infrastructure);
+	if (state.infrastructure.surfaceProvider.name !== "desktop") {
+		state.markers ??= createDelegatedMarkers(options.infrastructure);
+	}
 	// Turning the setting off retires every marker now, pending ones included;
 	// a retired marker never writes live again, even if the setting returns.
 	if (!options.sidebarMarkers)
@@ -778,7 +783,9 @@ export function createDefaultRunSession(
 		return {
 			...(state.options.infrastructure?.launchOperations ??
 				launchOperationsFromSurface(
-					new HerdrSurfaceProvider({ paneConfig: snapshot.paneConfig }),
+					state.infrastructure.surfaceProvider.name === "desktop"
+						? state.infrastructure.surfaceProvider
+						: new HerdrSurfaceProvider({ paneConfig: snapshot.paneConfig }),
 					snapshot.paneConfig,
 				)),
 			worktree: state.worktreeOperations,
@@ -1007,6 +1014,14 @@ export function createDefaultRunSession(
 		input: PiLaunchInput,
 		snapshot?: PiLaunchSnapshot,
 	): PreparedRun {
+		if (
+			input.task.worktree &&
+			state.infrastructure.surfaceProvider.name === "desktop"
+		) {
+			throw new Error(
+				"Desktop managed worktrees are not supported; launch refused before provisioning.",
+			);
+		}
 		const attempts: string[] = [];
 		const failures: { model: string; error: string }[] = [];
 		let publicId: string | undefined;
@@ -1151,6 +1166,11 @@ export function createDefaultRunSession(
 	const facade: PiRunSession = {
 		...state.kernel,
 		async handoffWorktree(input) {
+			if (state.infrastructure.surfaceProvider.name === "desktop") {
+				throw new Error(
+					"Desktop worktree handoff is not supported; no resources were created.",
+				);
+			}
 			// This is a long-lived interactive handoff, deliberately outside the
 			// watched kernel: no task reservation, acquire, producer or watcher.
 			const snapshot = input.snapshot;
@@ -1175,11 +1195,17 @@ export function createDefaultRunSession(
 			);
 			return { record: result.running, focusError: result.focusError };
 		},
-		createWorktreeCleanupOperations: (input) =>
-			createWorktreeCleanupOperations(
+		createWorktreeCleanupOperations: (input) => {
+			if (state.infrastructure.surfaceProvider.name === "desktop") {
+				throw new Error(
+					"Desktop worktree cleanup is not supported; no resources were removed.",
+				);
+			}
+			return createWorktreeCleanupOperations(
 				state.infrastructure.surfaceProvider,
 				input,
-			),
+			);
+		},
 		async spawnPi(input) {
 			try {
 				return await state.kernel.spawn(input.task, prepare(input));
