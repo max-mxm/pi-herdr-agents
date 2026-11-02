@@ -117,6 +117,8 @@ A `subagent` call selects the target checkout, reuses its Herdr workspace, and g
 
 **Results arrive automatically.** When a child finishes, the parent receives one bounded `subagent_result` message and starts a new turn with that result in context. Do not poll, tail session files, or wait in a shell loop. Results longer than 16,000 characters are shortened in the parent context, and the full result stays in the child session. Active watchers survive parent `/reload`, `/new`, `/resume`, and `/fork`. Quitting Pi stops parent-side delivery.
 
+Fresh children launched with a named role show that role in the Herdr pane title (`reviewer · login-review`), so the agent type is visible without opening the pane. The Pi widget and control tools continue to use the supplied child name. Bare launches, resumed sessions, and `/worktree` handoffs keep their supplied pane name.
+
 Disposable ordinary panes close after their result is delivered, and Herdr removes a tab when its last pane closes. Persistent specialists keep their pane between tasks. Managed worktree roots return to retained interactive shells. Subagent launches do not steal keyboard focus.
 
 Status labels, the stall watchdog, and no-progress advisories are described in [In-progress status updates](docs/tools.md#in-progress-status-updates) and [Supervision transport](docs/configuration.md#supervision-transport).

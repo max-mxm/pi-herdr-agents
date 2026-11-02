@@ -576,7 +576,7 @@ describe("Pi launch", () => {
 			const operations: PiLaunchOperations = {
 				worktree: createWorktreeOperations(),
 				createPane(name, cwd) {
-					assert.equal(name, "Worker");
+					assert.equal(name, "worker · Worker");
 					assert.equal(cwd, project, "placement must use the child's checkout");
 					events.push("create");
 					return "pane-1";
@@ -648,13 +648,38 @@ describe("Pi launch", () => {
 		});
 	});
 
+	it("keeps bare-agent pane labels unchanged", async () => {
+		await withFixture(async ({ request }) => {
+			let createdName = "";
+			const operations: PiLaunchOperations = {
+				worktree: createWorktreeOperations(),
+				createPane(name) {
+					createdName = name;
+					return "pane-bare";
+				},
+				createWorktree() {
+					throw new Error("unexpected worktree creation");
+				},
+				async waitForShellReady() {},
+				runScript(_surface, _command, options) {
+					return options.scriptPath;
+				},
+				closePane() {},
+			};
+
+			await launchPiSubagent({ ...request, agent: undefined }, operations);
+
+			assert.equal(createdName, "Worker");
+		});
+	});
+
 	it("treats an explicit null worktree as an ordinary pane", async () => {
 		await withFixture(async ({ request, project }) => {
 			let worktreeCreationAttempts = 0;
 			const operations: PiLaunchOperations = {
 				worktree: createWorktreeOperations(),
 				createPane(name, cwd) {
-					assert.equal(name, "Worker");
+					assert.equal(name, "worker · Worker");
 					assert.equal(cwd, project);
 					return "pane-null-worktree";
 				},
@@ -756,7 +781,7 @@ describe("Pi launch", () => {
 						throw new Error("must not create a tab");
 					},
 					(name, direction) => {
-						assert.equal(name, "Worker");
+						assert.equal(name, "worker · Worker");
 						assert.equal(direction, "down");
 						return childPane;
 					},
@@ -1418,7 +1443,7 @@ describe("Pi launch", () => {
 					return identity;
 				},
 				createWorktree(name, cwd, branch, base) {
-					assert.equal(name, "Worker");
+					assert.equal(name, "worker · Worker");
 					assert.equal(cwd, project);
 					assert.equal(branch, "issue/7");
 					assert.equal(base, baseSha);
@@ -1518,7 +1543,7 @@ describe("Pi launch", () => {
 					throw new Error("unexpected pane creation");
 				},
 				createWorktree(name, cwd, branch, base) {
-					assert.equal(name, "Worker");
+					assert.equal(name, "worker · Worker");
 					assert.equal(cwd, project);
 					assert.equal(branch, "issue/59-fresh");
 					assert.equal(base, linkedSha);
