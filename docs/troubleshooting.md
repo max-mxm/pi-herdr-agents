@@ -9,6 +9,9 @@ artificially: it selects the wrong transport. This branch recognizes a live loca
 `HC_TERMINAL_ID`; its [Desktop guide](desktop.md) documents supported actions,
 unsupported automatic worktrees, explicit tests and reversible activation.
 An installed release does not gain this transport merely because the branch exists.
+Use the [Desktop installation steps](desktop.md#install-this-fork) or the
+[French setup and AI troubleshooting guide](desktop-install.fr.md) to install
+this fork in the active profile. The upstream npm package is a different source.
 
 If a configured connection works in the parent but fails in Desktop children,
 check whether its authentication is an environment reference. The core's ambient

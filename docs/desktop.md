@@ -4,6 +4,67 @@ This branch adds a local `hc` transport alongside classic Herdr. It does not cha
 an installed Pi profile automatically, and it does not require spoofing
 `HERDR_ENV` or pointing the classic CLI at Desktop.
 
+## Install this fork
+
+The shared source is
+[`max-mxm/pi-herdr-agents`](https://github.com/max-mxm/pi-herdr-agents), branch
+`feat/herdr-desktop`. The upstream npm package is a different build.
+For a French walkthrough, see [Installation et dépannage](desktop-install.fr.md).
+
+1. Install Pi with package support, Git, Herdr Desktop and its `hc` CLI. Desktop
+   children use `/bin/bash`. The maintainer's observed environment is macOS,
+   Node.js 26.7.0, Pi 1.5.0, `hc` 0.1.18 and Herdr Desktop 0.1.13. These are
+   observed versions, not a tested compatibility range; native Windows and remote
+   Desktop terminals have not been verified.
+2. In the profile you use, remove only the previous copy of this extension if
+   present. For an npm source: `pi remove npm:pi-herdr-agents`. For a Git or local
+   source, remove that configured source. Keep unrelated packages and credentials.
+   If using a custom profile, set `PI_CODING_AGENT_DIR` before these commands.
+3. Install this fork:
+
+   ```bash
+   pi install git:https://github.com/max-mxm/pi-herdr-agents.git@feat/herdr-desktop
+   ```
+
+4. In a Herdr Desktop terminal, open your project and start Pi, or `/reload` an
+   existing parent after installation. Do not set `HERDR_ENV=1`; Herdr supplies
+   `HC_TERMINAL_ID`. Both `pi` and `hc` must be on the terminal's `PATH`.
+5. Configure your own Pi authentication and select a model you can use. A working
+   parent is required before delegating. No named roles or model credentials are
+   supplied by this fork. Your provider profile belongs to you, not this package.
+6. Load `/skill:pi-herdr-agents` in Pi for the operating guide. Named roles are
+   optional; a plain-language request can launch an ordinary child without one.
+
+For an optional first read-only check, ask Pi to launch one ordinary child, with
+no named role, and have it return `DESKTOP_OK` without changing files. The marker
+must arrive in the parent, not merely appear in a finished child's terminal.
+This is a transport check; it says nothing about application correctness.
+
+The custom cockpit, footer and workflow configuration from a maintainer's machine
+are separate. They are not required to launch Desktop children with this package.
+
+## Updating and local changes
+
+Repeat the Git install command and reload Pi to move to the current branch
+revision. Use a full commit SHA instead of the branch name for a reproducible
+installation. Updating the parent's code does not update already-running children.
+
+To investigate or adapt the extension with an AI assistant, make a source checkout
+outside Pi's managed package cache:
+
+```bash
+git clone https://github.com/max-mxm/pi-herdr-agents.git
+cd pi-herdr-agents
+git switch feat/herdr-desktop
+```
+
+Remove the installed Git package from the same profile, then run `pi install`
+with the absolute path to this checkout and reload Pi. Keep the checkout while
+it is loaded. Read `AGENTS.md` and the scope below before changing runtime code;
+the French guide includes a bounded diagnostic prompt. Report a reproducible
+problem in this fork's [issues](https://github.com/max-mxm/pi-herdr-agents/issues),
+with versions and redacted errors, never credentials or entire private sessions.
+
 ## Selection and scope
 
 - With `HC_TERMINAL_ID` set and `HERDR_ENV` not equal to `1`, the default runtime
@@ -98,14 +159,9 @@ sessions and scripts are retained for diagnosis. Only test-owned terminals are
 closed. These are transport/lifecycle integration tests, not proof that any
 application or business ticket is validated.
 
-## Activation and rollback
+## Rollback
 
-No automatic install, push or publication is performed. Before activating this
-branch in a profile, preserve that profile's existing package settings, disable
-only its existing copy of this extension and load the local package instead.
-Do not load both copies or disable unrelated safety extensions. Reload Pi after
-the targeted switch. The local worktree must remain available while it is loaded.
-
-Rollback consists of restoring that one package selection and reloading Pi.
-Retain configuration, sessions, branches and worktrees. No server restart,
+Restore the previous package source in the same profile, then reload Pi. Keep
+one copy active. Retain configuration, sessions, branches and worktrees. A local
+source checkout must remain available while selected. No core restart,
 terminal-wide cleanup or profile reset is required.

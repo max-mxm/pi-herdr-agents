@@ -1,12 +1,13 @@
 # Pi Herdr Agents
 
-> **Local experimental branch:** ordinary subagents can also run in Herdr Desktop
-> through `hc`. Automatic Desktop worktrees remain blocked. See the
-> [Desktop transport guide](docs/desktop.md) for verified scope, tests and activation.
-> The classic Herdr behavior described below is preserved.
+> **Herdr Desktop edition:** this fork of
+> [giuseppecrj/pi-herdr-agents](https://github.com/giuseppecrj/pi-herdr-agents)
+> adds local Desktop subagents through `hc`. Install it from this Git repository;
+> the upstream npm package does not include this adaptation.
+> **[Installation et dépannage en français](docs/desktop-install.fr.md)** ·
+> [Desktop setup and technical scope](docs/desktop.md).
+> Desktop support is experimental; automatic managed worktrees remain unsupported.
 
-[![npm version](https://img.shields.io/npm/v/pi-herdr-agents)](https://www.npmjs.com/package/pi-herdr-agents)
-[![CI](https://github.com/giuseppecrj/pi-herdr-agents/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/giuseppecrj/pi-herdr-agents/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ![Pi Herdr Agents: a parent Pi session delegating to parallel child agents in dedicated Herdr panes, an isolated worktree and a retained session, with a live status widget.](https://raw.githubusercontent.com/giuseppecrj/pi-herdr-agents/main/docs/assets/pi-herdr-agents-gallery.png)
@@ -39,34 +40,53 @@ Delegate investigation, implementation, and review without blocking the parent s
 ## Requirements
 
 - [Pi](https://github.com/earendil-works/pi) with package support
-- [Herdr](https://herdr.dev) and its CLI
-- `HERDR_ENV=1`, which means you start Pi from inside Herdr
+- For Desktop: [Herdr Desktop](https://herdr.dev), its `hc` CLI on `PATH`, and Pi
+  started inside a live local Desktop terminal (`HC_TERMINAL_ID` is set by Herdr).
+- For classic Herdr: its `herdr` CLI and `HERDR_ENV=1` supplied by that terminal.
+- Git and a POSIX shell (`/bin/bash` for Desktop children). The maintainer uses
+  macOS; native Windows support has not been established.
+
+Do not set `HERDR_ENV=1` to enable Desktop: it selects classic Herdr instead.
 
 Other terminal multiplexers are not supported. Session startup skips worktree inventory to avoid blocking Pi initialization. Use `/worktree list` or `worktree_list` to inspect managed worktrees. Outside Herdr, explicit inventory tools report unavailable inspection as unknown. Worktrees isolate Git checkouts, not processes or permissions. Child agents and installed Pi packages run with your user account's access.
 
 ## Install
 
-Install from npm:
+For this Desktop fork, install in the Pi profile you actually use:
 
 ```bash
-pi install npm:pi-herdr-agents
+pi install git:https://github.com/max-mxm/pi-herdr-agents.git@feat/herdr-desktop
 ```
 
-Install project-locally, or try it for one run:
+If you use a custom profile, set `PI_CODING_AGENT_DIR` to its existing directory
+before installing. Remove an old upstream copy from that same profile first
+(`pi remove npm:pi-herdr-agents` if that is its configured source). Load one copy
+of the extension. Git refs select a checkout: repeat the install command and
+reload Pi when moving to the current branch revision; use a full commit SHA in
+place of `feat/herdr-desktop` for a fixed revision.
+
+To install only in one project, or try this fork for one run:
 
 ```bash
-pi install -l npm:pi-herdr-agents
-pi -e npm:pi-herdr-agents
+pi install -l git:https://github.com/max-mxm/pi-herdr-agents.git@feat/herdr-desktop
+pi -e git:https://github.com/max-mxm/pi-herdr-agents.git@feat/herdr-desktop
 ```
 
-Then start Pi inside Herdr:
+Open a terminal in **Herdr Desktop**, go to your project and start Pi:
 
 ```bash
-herdr
 pi
 ```
 
 Restart or `/reload` Pi after installation. Review package source before you install any Pi package.
+Configure your own Pi authentication and a usable model. This package supplies
+the delegation tools and operating skill; it does not bundle named roles,
+provider credentials or a custom Desktop cockpit. See the
+[Desktop guide](docs/desktop.md#install-this-fork) for setup and troubleshooting.
+
+For the original classic-Herdr release, use the
+[upstream installation guide](https://github.com/giuseppecrj/pi-herdr-agents#install)
+and its `npm:pi-herdr-agents` package.
 
 ### Optional methodology pack
 

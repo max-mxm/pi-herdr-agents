@@ -2,6 +2,8 @@
 
 - [Experimental local Desktop transport](desktop.md) — verified scope, lifecycle
   tests, unsupported automatic worktrees and reversible activation.
+- [Installation Herdr Desktop en français](desktop-install.fr.md) — installation
+  du fork public, accès propres à chaque poste et dépannage avec un assistant IA.
 
 Use this page to find the authoritative document for a task. Current shipped
 behavior and accepted ADRs govern existing APIs. Historical plans and research

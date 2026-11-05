@@ -18,12 +18,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/giuseppecrj/pi-herdr-agents.git"
+    "url": "git+https://github.com/max-mxm/pi-herdr-agents.git"
   },
   "bugs": {
-    "url": "https://github.com/giuseppecrj/pi-herdr-agents/issues"
+    "url": "https://github.com/max-mxm/pi-herdr-agents/issues"
   },
-  "homepage": "https://github.com/giuseppecrj/pi-herdr-agents#readme",
+  "homepage": "https://github.com/max-mxm/pi-herdr-agents#readme",
   "publishConfig": {
     "access": "public"
   },
